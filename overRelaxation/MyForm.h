@@ -73,12 +73,12 @@ namespace overRelaxation {
   private: System::Windows::Forms::Label^  label1;
   private: System::Windows::Forms::CheckBox^  checkBox1;
   private: System::Windows::Forms::TextBox^  textBox7;
-  private: System::Windows::Forms::TabPage^  tabPage1;
+  //private: System::Windows::Forms::TabPage^  tabPage1;
   private: System::Windows::Forms::RadioButton^  radioButton2;
   private: System::Windows::Forms::RadioButton^  radioButton1;
   private: System::Windows::Forms::RadioButton^  radioButton4;
   private: System::Windows::Forms::RadioButton^  radioButton3;
-  private: ZedGraph::ZedGraphControl^  zedGraphControl1;
+
   private: System::Windows::Forms::Label^  label9;
 
   protected:
@@ -96,7 +96,6 @@ namespace overRelaxation {
     /// </summary>
     void InitializeComponent(void)
     {
-      this->components = (gcnew System::ComponentModel::Container());
       this->tabPage2 = (gcnew System::Windows::Forms::TabPage());
       this->label8 = (gcnew System::Windows::Forms::Label());
       this->label7 = (gcnew System::Windows::Forms::Label());
@@ -130,16 +129,15 @@ namespace overRelaxation {
       this->textBox11 = (gcnew System::Windows::Forms::TextBox());
       this->dataGridView2 = (gcnew System::Windows::Forms::DataGridView());
       this->tabControl1 = (gcnew System::Windows::Forms::TabControl());
-      this->tabPage1 = (gcnew System::Windows::Forms::TabPage());
+      //this->tabPage1 = (gcnew System::Windows::Forms::TabPage());
       this->radioButton4 = (gcnew System::Windows::Forms::RadioButton());
       this->radioButton3 = (gcnew System::Windows::Forms::RadioButton());
-      this->zedGraphControl1 = (gcnew ZedGraph::ZedGraphControl());
       this->tabPage2->SuspendLayout();
       this->groupBox5->SuspendLayout();
       this->groupBox7->SuspendLayout();
       (cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView2))->BeginInit();
       this->tabControl1->SuspendLayout();
-      this->tabPage1->SuspendLayout();
+      //this->tabPage1->SuspendLayout();
       this->SuspendLayout();
       // 
       // tabPage2
@@ -493,25 +491,24 @@ namespace overRelaxation {
       // tabControl1
       // 
       this->tabControl1->Controls->Add(this->tabPage2);
-      this->tabControl1->Controls->Add(this->tabPage1);
+      //this->tabControl1->Controls->Add(this->tabPage1);
       this->tabControl1->Location = System::Drawing::Point(-1, 2);
       this->tabControl1->Margin = System::Windows::Forms::Padding(2);
       this->tabControl1->Name = L"tabControl1";
       this->tabControl1->SelectedIndex = 0;
       this->tabControl1->Size = System::Drawing::Size(1129, 466);
       this->tabControl1->TabIndex = 14;
-      // 
-      // tabPage1
-      // 
-      this->tabPage1->Controls->Add(this->radioButton4);
-      this->tabPage1->Controls->Add(this->radioButton3);
-      this->tabPage1->Controls->Add(this->zedGraphControl1);
-      this->tabPage1->Location = System::Drawing::Point(4, 22);
-      this->tabPage1->Name = L"tabPage1";
-      this->tabPage1->Size = System::Drawing::Size(1121, 440);
-      this->tabPage1->TabIndex = 2;
-      this->tabPage1->Text = L"Графики";
-      this->tabPage1->UseVisualStyleBackColor = true;
+      //// 
+      //// tabPage1
+      //// 
+      //this->tabPage1->Controls->Add(this->radioButton4);
+      //this->tabPage1->Controls->Add(this->radioButton3);
+      //this->tabPage1->Location = System::Drawing::Point(4, 22);
+      //this->tabPage1->Name = L"tabPage1";
+      //this->tabPage1->Size = System::Drawing::Size(1121, 440);
+      //this->tabPage1->TabIndex = 2;
+      //this->tabPage1->Text = L"Графики";
+      //this->tabPage1->UseVisualStyleBackColor = true;
       // 
       // radioButton4
       // 
@@ -536,20 +533,6 @@ namespace overRelaxation {
       this->radioButton3->UseVisualStyleBackColor = true;
       this->radioButton3->CheckedChanged += gcnew System::EventHandler(this, &MyForm::radioButton3_CheckedChanged);
       // 
-      // zedGraphControl1
-      // 
-      this->zedGraphControl1->Location = System::Drawing::Point(3, 3);
-      this->zedGraphControl1->Name = L"zedGraphControl1";
-      this->zedGraphControl1->ScrollGrace = 0;
-      this->zedGraphControl1->ScrollMaxX = 0;
-      this->zedGraphControl1->ScrollMaxY = 0;
-      this->zedGraphControl1->ScrollMaxY2 = 0;
-      this->zedGraphControl1->ScrollMinX = 0;
-      this->zedGraphControl1->ScrollMinY = 0;
-      this->zedGraphControl1->ScrollMinY2 = 0;
-      this->zedGraphControl1->Size = System::Drawing::Size(990, 434);
-      this->zedGraphControl1->TabIndex = 0;
-      // 
       // MyForm
       // 
       this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
@@ -569,8 +552,8 @@ namespace overRelaxation {
       this->groupBox7->PerformLayout();
       (cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView2))->EndInit();
       this->tabControl1->ResumeLayout(false);
-      this->tabPage1->ResumeLayout(false);
-      this->tabPage1->PerformLayout();
+      //this->tabPage1->ResumeLayout(false);
+      //this->tabPage1->PerformLayout();
       this->ResumeLayout(false);
 
     }
@@ -594,6 +577,7 @@ namespace overRelaxation {
     textBox7->ReadOnly = true;
     checkBox1->Checked = true;
     radioButton1->Checked = true;
+    //tabPage1->Enabled = false;
   }
 
   private: System::Void checkBox1_CheckedChanged(System::Object^  sender, System::EventArgs^  e) {
