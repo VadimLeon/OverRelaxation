@@ -1,0 +1,8 @@
+﻿  MyForm.cpp
+s:\system\desktop\nm_relax-master\новая папка\overrelaxation\overrelaxation\MyForm.h(12): error C2871: 'ZedGraph' : a namespace with this name does not exist
+s:\system\desktop\nm_relax-master\новая папка\overrelaxation\overrelaxation\MyForm.h(495): warning C4244: 'argument' : conversion from 'double' to 'int', possible loss of data
+s:\system\desktop\nm_relax-master\новая папка\overrelaxation\overrelaxation\MyForm.h(497): warning C4244: 'argument' : conversion from 'double' to 'int', possible loss of data
+s:\system\desktop\nm_relax-master\новая папка\overrelaxation\overrelaxation\MyForm.h(509): warning C4244: 'initializing' : conversion from 'double' to 'int', possible loss of data
+s:\system\desktop\nm_relax-master\новая папка\overrelaxation\overrelaxation\MyForm.h(513): warning C4018: '<' : signed/unsigned mismatch
+s:\system\desktop\nm_relax-master\новая папка\overrelaxation\overrelaxation\MyForm.h(515): warning C4018: '<' : signed/unsigned mismatch
+MyForm.cpp(9): warning C4829: Possibly incorrect parameters to function main. Consider 'int main(Platform::Array<Platform::String^>^ argv)'
