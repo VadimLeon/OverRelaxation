@@ -580,9 +580,10 @@ namespace overRelaxation {
   {
     textBox1->Text = "1e-8";
     textBox2->Text = "500";
-    textBox7->Text = "1.93908437292";
-    textBox11->Text = "4";
-    textBox10->Text = "4";
+    resetomega();
+    textBox7->Text = omega.ToString();
+    textBox11->Text = "10";
+    textBox10->Text = "10";
     textBox3->ReadOnly = true;
     textBox4->ReadOnly = true;
     textBox5->ReadOnly = true;

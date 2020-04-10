@@ -117,7 +117,8 @@ std::vector<std::vector<double>> solveDifferenceScheme(std::function<double(doub
         v[i][j] = (h2 * (v[i + 1][j] + v[i - 1][j]) + k2 * (v[i][j + 1] + v[i][j - 1]));
         v[i][j] += isTest ? ft(getX(i), getY(j)) :
                             muu(getX(i), getY(j));
-        v[i][j] *= 1 / a2;
+        v[i][j] *= omega / a2;
+        v[i][j] += (1 - omega) * oldV;
         double currEps = std::fabs(oldV - v[i][j]);
         if (currEps > maxEps) maxEps = currEps;
       }
