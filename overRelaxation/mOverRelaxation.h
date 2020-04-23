@@ -7,11 +7,6 @@
 
 #define PI 3.141592653589793
 
-template<typename T>
-T sqr(T x) {
-  return x * x;
-}
-
 double muu(double _x, double _y);
 double mut(double _x, double _y);
 double ft(double _x, double _y);
@@ -30,4 +25,5 @@ std::vector<std::vector<double>> solveDifferenceScheme(std::function<double(doub
   int countStep,
   std::vector<double>& ans,
   double omega,
-  bool isTest);
+  bool isTest,
+  std::vector<std::vector<double>>& _u);

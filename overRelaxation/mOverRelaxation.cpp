@@ -1,4 +1,5 @@
 #include "mOverRelaxation.h"
+#include "Methods.h"
 
 double ft(double x, double y)
 {
@@ -57,7 +58,8 @@ std::vector<std::vector<double>> solveDifferenceScheme(std::function<double(doub
                                                        int countStep,
                                                        std::vector<double>& ans,
                                                        double omega,
-                                                       bool isTest)
+                                                       bool isTest,
+                                                       std::vector<std::vector<double>>& u)
 {
   double h = static_cast<double>(b - a) / static_cast<double>(n);
   double k = static_cast<double>(d - c) / static_cast<double>(m);
@@ -82,10 +84,14 @@ std::vector<std::vector<double>> solveDifferenceScheme(std::function<double(doub
     for (int i = 0; i < n + 1; i++) {
       v[i][0] = mut(getX(i), a);
       v[i][m] = mut(getX(i), b);
+      u[i][0] = mut(getX(i), a);
+      u[i][m] = mut(getX(i), b);
     }
     for (int j = 0; j < m + 1; j++) {
       v[0][j] = mut(c, getY(j));
       v[n][j] = mut(d, getY(j));
+      u[0][j] = mut(c, getY(j));
+      u[n][j] = mut(d, getY(j));
     }
   }
   else
@@ -126,35 +132,45 @@ std::vector<std::vector<double>> solveDifferenceScheme(std::function<double(doub
     counter++;
   } while (maxEps >= eps && counter < countStep);
 
-  double R2 = 0.0, R;
-
   for (int j = 1; j < m; j++)
   {
     for (int i = 1; i < n; i++)
     {
-      R = -a2 * v[i][j] + h2 * (v[i + 1][j] + v[i - 1][j]) + k2 * (v[i][j + 1] + v[i][j - 1]);
-      R += ft(getX(i), getY(j));
-      R2 += sqr(R);
+      u[i][j] = mut(getX(i), getY(j));
     }
   }
-  R2 = sqrt(R2);
 
-  double temp_max = 0.0, temp;
-  for (int j = 1; j < m; j++)
+  double R2 = 0.0, R;
+  if (isTest)
   {
-    for (int i = 1; i < n; i++)
+    for (int j = 1; j < m; j++)
     {
-      temp = std::fabs(mut(getX(i), getY(j)) - v[i][j]);
-      if (temp > temp_max)
+      for (int i = 1; i < n; i++)
       {
-        temp_max = temp;
+        R = -a2 * v[i][j] + h2 * (v[i + 1][j] + v[i - 1][j]) + k2 * (v[i][j + 1] + v[i][j - 1]);
+        R += ft(getX(i), getY(j));
+        R2 += sqr(R);
       }
     }
-  }
+    R2 = sqrt(R2);
 
-  ans.push_back(counter);
-  ans.push_back(maxEps);
-  ans.push_back(R2);
-  ans.push_back(temp_max);
+    double temp_max = 0.0, temp;
+    for (int j = 1; j < m; j++)
+    {
+      for (int i = 1; i < n; i++)
+      {
+        temp = std::fabs(mut(getX(i), getY(j)) - v[i][j]);
+        if (temp > temp_max)
+        {
+          temp_max = temp;
+        }
+      }
+    }
+
+    ans.push_back(counter);
+    ans.push_back(maxEps);
+    ans.push_back(R2);
+    ans.push_back(temp_max);
+  }
   return v;
 }
