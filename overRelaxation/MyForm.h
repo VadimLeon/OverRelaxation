@@ -1,11 +1,19 @@
 ﻿#pragma once
+#include <math.h>
+#include <iostream>
+#define _USE_MATH_DEFINES
+
 #include "overRelax.h"
+#include "SimpleIteration.h"
 
 namespace overRelaxation {
 
-  OverRelax test;
-  OverRelax main1;
-  OverRelax main2;
+  SimpleIteration testSIt;
+  SimpleIteration mainSIt1;
+  SimpleIteration mainSIt2;
+  OverRelax testOver;
+  OverRelax mainOver1;
+  OverRelax mainOver2;
   int n, m;
   double omega = 1., h, k;
   bool isTests;
@@ -16,7 +24,6 @@ namespace overRelaxation {
   using namespace System::Windows::Forms;
   using namespace System::Data;
   using namespace System::Drawing;
-  using namespace ZedGraph;
 
   /// <summary>
   /// Summary for MyForm
@@ -80,8 +87,6 @@ namespace overRelaxation {
   private: System::Windows::Forms::TextBox^  textBox7;
   private: System::Windows::Forms::RadioButton^  radioButton2;
   private: System::Windows::Forms::RadioButton^  radioButton1;
-  private: System::Windows::Forms::RadioButton^  radioButton4;
-  private: System::Windows::Forms::RadioButton^  radioButton3;
 
   private: System::Windows::Forms::Label^  label9;
   private: System::Windows::Forms::TabControl^  tabControl2;
@@ -103,6 +108,7 @@ namespace overRelaxation {
   private: System::Windows::Forms::DataGridView^  dataGridView6;
   private: System::Windows::Forms::Label^  label10;
   private: System::Windows::Forms::Label^  label6;
+  private: System::Windows::Forms::ComboBox^  comboBox1;
 
   protected:
   private: System::ComponentModel::IContainer^ components;
@@ -147,6 +153,7 @@ namespace overRelaxation {
       this->label4 = (gcnew System::Windows::Forms::Label());
       this->textBox3 = (gcnew System::Windows::Forms::TextBox());
       this->groupBox5 = (gcnew System::Windows::Forms::GroupBox());
+      this->comboBox1 = (gcnew System::Windows::Forms::ComboBox());
       this->label9 = (gcnew System::Windows::Forms::Label());
       this->radioButton2 = (gcnew System::Windows::Forms::RadioButton());
       this->radioButton1 = (gcnew System::Windows::Forms::RadioButton());
@@ -168,8 +175,6 @@ namespace overRelaxation {
       this->label13 = (gcnew System::Windows::Forms::Label());
       this->textBox11 = (gcnew System::Windows::Forms::TextBox());
       this->tabControl1 = (gcnew System::Windows::Forms::TabControl());
-      this->radioButton4 = (gcnew System::Windows::Forms::RadioButton());
-      this->radioButton3 = (gcnew System::Windows::Forms::RadioButton());
       this->tabPage2->SuspendLayout();
       this->tabControl2->SuspendLayout();
       this->tabPage1->SuspendLayout();
@@ -214,7 +219,7 @@ namespace overRelaxation {
       this->tabPage2->Padding = System::Windows::Forms::Padding(2);
       this->tabPage2->Size = System::Drawing::Size(1121, 440);
       this->tabPage2->TabIndex = 1;
-      this->tabPage2->Text = L"Метод верхней релаксации";
+      this->tabPage2->Text = L"Методы решения СЛАУ";
       this->tabPage2->UseVisualStyleBackColor = true;
       // 
       // label10
@@ -480,6 +485,7 @@ namespace overRelaxation {
       // groupBox5
       // 
       this->groupBox5->BackColor = System::Drawing::SystemColors::ButtonFace;
+      this->groupBox5->Controls->Add(this->comboBox1);
       this->groupBox5->Controls->Add(this->label9);
       this->groupBox5->Controls->Add(this->radioButton2);
       this->groupBox5->Controls->Add(this->radioButton1);
@@ -504,6 +510,18 @@ namespace overRelaxation {
       this->groupBox5->TabIndex = 22;
       this->groupBox5->TabStop = false;
       this->groupBox5->Text = L"Параметры";
+      // 
+      // comboBox1
+      // 
+      this->comboBox1->FormattingEnabled = true;
+      this->comboBox1->Items->AddRange(gcnew cli::array< System::Object^  >(4) {
+        L"Верхней релаксации", L"Простой итерации", L"Минимальных невязок",
+          L"С Чебышевскими параметрами"
+      });
+      this->comboBox1->Location = System::Drawing::Point(255, 18);
+      this->comboBox1->Name = L"comboBox1";
+      this->comboBox1->Size = System::Drawing::Size(135, 21);
+      this->comboBox1->TabIndex = 31;
       // 
       // label9
       // 
@@ -538,7 +556,6 @@ namespace overRelaxation {
       this->radioButton1->TabStop = true;
       this->radioButton1->Text = L"Тестовая задача";
       this->radioButton1->UseVisualStyleBackColor = true;
-      this->radioButton1->CheckedChanged += gcnew System::EventHandler(this, &MyForm::radioButton1_CheckedChanged);
       // 
       // checkBox1
       // 
@@ -717,29 +734,6 @@ namespace overRelaxation {
       this->tabControl1->Size = System::Drawing::Size(1129, 466);
       this->tabControl1->TabIndex = 14;
       // 
-      // radioButton4
-      // 
-      this->radioButton4->AutoSize = true;
-      this->radioButton4->Location = System::Drawing::Point(999, 36);
-      this->radioButton4->Name = L"radioButton4";
-      this->radioButton4->Size = System::Drawing::Size(113, 17);
-      this->radioButton4->TabIndex = 31;
-      this->radioButton4->TabStop = true;
-      this->radioButton4->Text = L"Основная задача";
-      this->radioButton4->UseVisualStyleBackColor = true;
-      // 
-      // radioButton3
-      // 
-      this->radioButton3->AutoSize = true;
-      this->radioButton3->Location = System::Drawing::Point(999, 12);
-      this->radioButton3->Name = L"radioButton3";
-      this->radioButton3->Size = System::Drawing::Size(111, 17);
-      this->radioButton3->TabIndex = 30;
-      this->radioButton3->TabStop = true;
-      this->radioButton3->Text = L"Тестовая задача";
-      this->radioButton3->UseVisualStyleBackColor = true;
-      this->radioButton3->CheckedChanged += gcnew System::EventHandler(this, &MyForm::radioButton3_CheckedChanged);
-      // 
       // MyForm
       // 
       this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
@@ -784,9 +778,11 @@ namespace overRelaxation {
   {
     textBox1->Text = "1e-8";
     textBox2->Text = "500";
-    textBox11->Text = "10";
-    textBox10->Text = "10";
-    resetomega();
+    textBox11->Text = "5";
+    textBox10->Text = "5";
+    testOver.setH(1.0 / Convert::ToDouble(textBox11->Text));
+    testOver.setOmega(0.0, true);
+    textBox7->Text = testOver.getOmega().ToString();
     textBox3->ReadOnly = true;
     textBox4->ReadOnly = true;
     textBox6->ReadOnly = true;
@@ -811,7 +807,9 @@ namespace overRelaxation {
     dataGridView6->ColumnHeadersVisible = false;
     checkBox1->Checked = true;
     radioButton1->Checked = true;
+    comboBox1->SelectedIndex = 3;
   }
+
   private: System::Void Button1_Click(System::Object^ sender, System::EventArgs^ e) {
     double a = 0.;
     double b = 1.;
@@ -821,103 +819,172 @@ namespace overRelaxation {
     m = Convert::ToInt32(textBox11->Text);
     h = static_cast<double>(b - a) / static_cast<double>(n);
     k = static_cast<double>(d - c) / static_cast<double>(m);
-    checkBox1->Checked ? resetomega() : omega = Convert::ToDouble(textBox7->Text);
     double eps = Convert::ToDouble(textBox1->Text);
     int countStep = Convert::ToInt32(textBox2->Text);
 
+    if (!checkBox1->Checked) { SetOmegaFalse(); }
+    else { SetOmegaTrue(); }
+
+    int rMaxX, rMaxY;
     isTests = radioButton1->Checked;
     if (isTests)
     {
-      test.setParameters(n, m, eps, countStep, a, b, c, d, omega);
-      test.solveDifferenceScheme(true);
-      resetHedarsTableT();
-      updateTable_t();
+      switch (comboBox1->SelectedIndex)
+      {
+        case 0:
+          testOver.setParameters(n, m, eps, countStep, a, b, c, d, omega);
+          testOver.solveDifferenceScheme(true);
+          resetHedarsTableT();
+          updateTableOver_t();
+          textBox3->Text = testOver.getCountIt().ToString();
+          textBox4->Text = testOver.getEps().ToString("E");
+          textBox6->Text = (testOver.getMaxR(rMaxX, rMaxY)).ToString("E");
+          break;
+        
+        case 1:
+          testSIt.setParameters(n, m, eps, countStep, a, b, c, d, omega);
+          testSIt.solveDifferenceScheme(true);
+          resetHedarsTableT();
+          updateTableSit_t();
+          textBox3->Text = testSIt.getCountIt().ToString();
+          textBox4->Text = testSIt.getEps().ToString("E");
+          textBox6->Text = (testSIt.getMaxR(rMaxX, rMaxY)).ToString("E");
+          break;
+
+        case 2:
+
+          break;
+
+        case 3:
+
+          break;
+
+        default: break;
+      }
     }
     else
     {
-      main1.setParameters(n, m, eps, countStep, a, b, c, d, omega);
-      main2.setParameters(2*n, 2*m, eps, countStep, a, b, c, d, omega);
-      main1.solveDifferenceScheme(false);
-      main2.solveDifferenceScheme(false);
-      resetHedarsTableM();
-      updateTable_m();
+      switch (comboBox1->SelectedIndex)
+      {
+        case 0:
+          mainOver1.setParameters(n, m, eps, countStep, a, b, c, d, omega);
+          mainOver1.solveDifferenceScheme(false);
+          mainOver2.setParameters(2 * n, 2 * m, eps, countStep, a, b, c, d, omega);
+          mainOver2.solveDifferenceScheme(false);
+          resetHedarsTableM();
+          updateTableOver_m();
+          textBox3->Text = mainOver1.getCountIt().ToString();
+          textBox4->Text = mainOver1.getEps().ToString("E");
+          textBox6->Text = (mainOver1.getMaxR(mainOver2, rMaxX, rMaxY)).ToString("E");
+          break;
+        
+        case 1:
+          mainSIt1.setParameters(n, m, eps, countStep, a, b, c, d, omega);
+          mainSIt1.solveDifferenceScheme(false);
+          mainSIt2.setParameters((2 * n), (2 * m), eps, countStep, a, b, c, d, sqr(0.5 * h) * 0.25);
+          mainSIt2.solveDifferenceScheme(false);
+          resetHedarsTableM();
+          updateTableSit_m();
+          textBox3->Text = mainSIt1.getCountIt().ToString();
+          textBox4->Text = mainSIt1.getEps().ToString("E");
+          textBox6->Text = (mainSIt1.getMaxR(SimpleIteration(), rMaxX, rMaxY)).ToString("E");
+          break;
+
+        case 2:
+
+          break;
+
+        case 3:
+
+          break;
+
+        default: break;
+      }
     }
 
-    int rMaxX, rMaxY;
-    textBox3->Text = isTests ? test.getCountIt().ToString() : main1.getCountIt().ToString();
-    textBox4->Text = isTests ? test.getEps().ToString("E") : main1.getEps().ToString("E");
-    textBox6->Text = isTests ? (test.getMaxR(rMaxX, rMaxY)).ToString("E") : (main1.getMaxR(main2, rMaxX, rMaxY)).ToString("E");
     label6->Text = ("x: " + rMaxX.ToString());
     label10->Text = ("y: " + rMaxY.ToString());
   }
-  private: System::Void checkBox1_CheckedChanged(System::Object^  sender, System::EventArgs^  e) {
-    if (checkBox1->Checked)
-    {
-      resetomega();
-      textBox7->ReadOnly = true;
-    }
-    else
-    {
-      textBox7->ReadOnly = false;
-    }
-  }
-  private: System::Void radioButton3_CheckedChanged(System::Object^  sender, System::EventArgs^  e) {
-    radioButton3->Checked ? radioButton1->Checked = true : radioButton2->Checked = true;
-  }
-  private: System::Void radioButton1_CheckedChanged(System::Object^  sender, System::EventArgs^  e) {
-    radioButton1->Checked ? radioButton3->Checked = true : radioButton4->Checked = true;
-  }
-  private: System::Void textBox11_KeyPress(System::Object^  sender, System::Windows::Forms::KeyPressEventArgs^  e)
-  {
-    char number = (char)e->KeyChar;
-    if (!Char::IsDigit(number) && number != 8)
-    {
-      e->Handled = true;
-    }
-  }
-  private: System::Void textBox10_KeyPress(System::Object^  sender, System::Windows::Forms::KeyPressEventArgs^  e)
-  {
-    char number = (char)e->KeyChar;
-    if (!Char::IsDigit(number) && number != 8)
-    {
-      e->Handled = true;
-    }
-  }
-  private: System::Void textBox1_KeyPress(System::Object^  sender, System::Windows::Forms::KeyPressEventArgs^  e)
-  {
-    char number = (char)e->KeyChar;
-    if (!Char::IsDigit(number) && number != 8 && number != 44 && number != 45 && number != 46 && number != 101)
-    {
-      e->Handled = true;
-    }
-  }
-  private: System::Void textBox2_KeyPress(System::Object^  sender, System::Windows::Forms::KeyPressEventArgs^  e)
-  {
-    char number = (char)e->KeyChar;
-    if (!Char::IsDigit(number) && number != 8)
-    {
-      e->Handled = true;
-    }
-  }
-  private: System::Void textBox7_KeyPress(System::Object^  sender, System::Windows::Forms::KeyPressEventArgs^  e)
-  {
-    char number = (char)e->KeyChar;
-    if (!Char::IsDigit(number) && number != 8 && number != 44 && number != 45 && number != 46 && number != 101)
-    {
-      e->Handled = true;
-    }
-  }
-  private: System::Void resetomega()
-  {
-    double h = 1. / (Convert::ToDouble(textBox11->Text));
-    double tmp = 1 + sqrt(4 * sqr(sin(M_PI * h * 0.5)));
-    omega = 2. / tmp;
-    textBox7->Text = omega.ToString();
 
-    test.setOmega(omega);
-    main1.setOmega(omega);
-    main2.setOmega(omega);
+  private: System::Void checkBox1_CheckedChanged(System::Object^  sender, System::EventArgs^  e)
+  {
+      textBox7->ReadOnly = checkBox1->Checked;
+      if (checkBox1->Checked) SetOmegaTrue();
   }
+
+  private: System::Void SetOmegaTrue()
+  {
+    switch (comboBox1->SelectedIndex)
+    {
+      case 0:
+        h = 1.0 / Convert::ToDouble(textBox11->Text);
+
+        testOver.setH(h);
+        mainOver1.setH(h);
+        mainOver2.setH(h);
+
+        testOver.setOmega(0.0, true);
+        mainOver1.setOmega(0.0, true);
+        mainOver2.setOmega(0.0, true);
+
+        omega = testOver.getOmega();
+
+        textBox7->Text = omega.ToString();
+        break;
+
+      case 1:
+        h = 1.0 / Convert::ToDouble(textBox11->Text);
+
+        testSIt.setH(h);
+        mainSIt1.setH(h);
+        mainSIt2.setH(h);
+
+        testSIt.setOmega(0.0, true);
+        mainSIt1.setOmega(0.0, true);
+        mainSIt2.set2Omega(0.0, true);
+
+        omega = testSIt.getOmega();
+
+        textBox7->Text = omega.ToString();
+        break;
+
+      case 2:
+        break;
+
+      case 3:
+        break;
+      default: break;
+    }
+  }
+  private: System::Void SetOmegaFalse()
+  {
+    switch (comboBox1->SelectedIndex)
+    {
+      case 0:
+        omega = Convert::ToDouble(textBox7->Text);
+
+        testOver.setOmega(omega);
+        mainOver1.setOmega(omega);
+        mainOver2.setOmega(omega);
+        break;
+
+      case 1:
+        omega = Convert::ToDouble(textBox7->Text);
+
+        testSIt.setOmega(omega);
+        mainSIt1.setOmega(omega);
+        mainSIt2.set2Omega(omega, true);
+        break;
+
+      case 2:
+        break;
+
+      case 3:
+        break;
+      default: break;
+    }
+  }
+
   private: System::Void resetHedarsTableM()
   {
     dataGridView4->Rows->Clear();
@@ -961,67 +1028,67 @@ namespace overRelaxation {
       dataGridView6->Rows[i]->Cells[0]->Value = n - i + 2;
     }
     for (int i = (int)n * 2 + 2; i > 1; i--) {
-      dataGridView5->Rows[i]->Cells[1]->Value = k * 0.5 * (n - i + 2);
+      dataGridView5->Rows[i]->Cells[1]->Value = k * 0.5 * (n * 2 - i + 2);
       dataGridView5->Rows[i]->Cells[0]->Value = n * 2 - i + 2;
     }
   }
   private: System::Void resetHedarsTableT()
   {
-      dataGridView2->Rows->Clear();
-      dataGridView2->ColumnCount = (int)n + 3;
-      dataGridView1->Rows->Clear();
-      dataGridView1->ColumnCount = (int)n + 3;
-      dataGridView3->Rows->Clear();
-      dataGridView3->ColumnCount = (int)n + 3;
+    dataGridView2->Rows->Clear();
+    dataGridView2->ColumnCount = (int)n + 3;
+    dataGridView1->Rows->Clear();
+    dataGridView1->ColumnCount = (int)n + 3;
+    dataGridView3->Rows->Clear();
+    dataGridView3->ColumnCount = (int)n + 3;
 
-      for (int i = 0; i <= m + 2; i++)
-      {
-        dataGridView2->Rows->Add();
-        dataGridView1->Rows->Add();
-        dataGridView3->Rows->Add();
-      }
+    for (int i = 0; i <= m + 2; i++)
+    {
+      dataGridView2->Rows->Add();
+      dataGridView1->Rows->Add();
+      dataGridView3->Rows->Add();
+    }
 
-      dataGridView2->Rows[0]->Cells[1]->Value = "i";
-      dataGridView1->Rows[0]->Cells[1]->Value = "i";
-      dataGridView3->Rows[0]->Cells[1]->Value = "i";
-      dataGridView2->Rows[1]->Cells[0]->Value = "j";
-      dataGridView1->Rows[1]->Cells[0]->Value = "j";
-      dataGridView3->Rows[1]->Cells[0]->Value = "j";
-      dataGridView2->Rows[1]->Cells[1]->Value = "Y\\X";
-      dataGridView1->Rows[1]->Cells[1]->Value = "Y\\X";
-      dataGridView3->Rows[1]->Cells[1]->Value = "Y\\X";
+    dataGridView2->Rows[0]->Cells[1]->Value = "i";
+    dataGridView1->Rows[0]->Cells[1]->Value = "i";
+    dataGridView3->Rows[0]->Cells[1]->Value = "i";
+    dataGridView2->Rows[1]->Cells[0]->Value = "j";
+    dataGridView1->Rows[1]->Cells[0]->Value = "j";
+    dataGridView3->Rows[1]->Cells[0]->Value = "j";
+    dataGridView2->Rows[1]->Cells[1]->Value = "Y\\X";
+    dataGridView1->Rows[1]->Cells[1]->Value = "Y\\X";
+    dataGridView3->Rows[1]->Cells[1]->Value = "Y\\X";
 
-      for (int i = 2; i <= n + 2; i++)
-      {
-        dataGridView2->Rows[0]->Cells[i]->Value = i - 2;
-        dataGridView1->Rows[0]->Cells[i]->Value = i - 2;
-        dataGridView3->Rows[0]->Cells[i]->Value = i - 2;
-        dataGridView2->Rows[1]->Cells[i]->Value = h * (i - 2);
-        dataGridView1->Rows[1]->Cells[i]->Value = h * (i - 2);
-        dataGridView3->Rows[1]->Cells[i]->Value = h * (i - 2);
-      }
-      for (int i = (int)n + 2; i > 1; i--)
-      {
-        dataGridView2->Rows[i]->Cells[0]->Value = n - i + 2;
-        dataGridView1->Rows[i]->Cells[0]->Value = n - i + 2;
-        dataGridView3->Rows[i]->Cells[0]->Value = n - i + 2;
-        dataGridView2->Rows[i]->Cells[1]->Value = k * (n - i + 2);
-        dataGridView1->Rows[i]->Cells[1]->Value = k * (n - i + 2);
-        dataGridView3->Rows[i]->Cells[1]->Value = k * (n - i + 2);
-      }
+    for (int i = 2; i <= n + 2; i++)
+    {
+      dataGridView2->Rows[0]->Cells[i]->Value = i - 2;
+      dataGridView1->Rows[0]->Cells[i]->Value = i - 2;
+      dataGridView3->Rows[0]->Cells[i]->Value = i - 2;
+      dataGridView2->Rows[1]->Cells[i]->Value = h * (i - 2);
+      dataGridView1->Rows[1]->Cells[i]->Value = h * (i - 2);
+      dataGridView3->Rows[1]->Cells[i]->Value = h * (i - 2);
+    }
+    for (int i = (int)n + 2; i > 1; i--)
+    {
+      dataGridView2->Rows[i]->Cells[0]->Value = n - i + 2;
+      dataGridView1->Rows[i]->Cells[0]->Value = n - i + 2;
+      dataGridView3->Rows[i]->Cells[0]->Value = n - i + 2;
+      dataGridView2->Rows[i]->Cells[1]->Value = k * (n - i + 2);
+      dataGridView1->Rows[i]->Cells[1]->Value = k * (n - i + 2);
+      dataGridView3->Rows[i]->Cells[1]->Value = k * (n - i + 2);
+    }
   }
-  private: System::Void updateTable_m()
+  private: System::Void updateTableOver_m()
   {
     double tmpMaxR = 0., tmpR;
     int rMaxX, rMaxY;
 
-    for (int i = 2; i < main1.getW() + 3; i++)
+    for (int i = 2; i < mainOver1.getW() + 3; i++)
     {
-      for (int j = 2; j < main1.getH() + 3; j++)
+      for (int j = 2; j < mainOver1.getH() + 3; j++)
       {
-        dataGridView4->Rows[main1.getH() - j + 4]->Cells[i]->Value = main1.getV(i - 2, j - 2).ToString("E");
-        tmpR = abs(main2.getV(2 * i - 4, 2 * j - 4) - main1.getV(i - 2, j - 2));
-        dataGridView6->Rows[main1.getH() - j + 4]->Cells[i]->Value = tmpR.ToString("E");
+        dataGridView4->Rows[mainOver1.getH() - j + 4]->Cells[i]->Value = mainOver1.getV(i - 2, j - 2).ToString("E");
+        tmpR = abs(mainOver2.getV(2 * i - 4, 2 * j - 4) - mainOver1.getV(i - 2, j - 2));
+        dataGridView6->Rows[mainOver1.getH() - j + 4]->Cells[i]->Value = tmpR.ToString("E");
         if (tmpR > tmpMaxR)
         {
           tmpMaxR = tmpR;
@@ -1030,11 +1097,11 @@ namespace overRelaxation {
         }
       }
     }
-    for (int i = 2; i < main2.getW() + 3; i++)
+    for (int i = 2; i < mainOver2.getW() + 3; i++)
     {
-      for (int j = 2; j < main2.getH() + 3; j++)
+      for (int j = 2; j < mainOver2.getH() + 3; j++)
       {
-        dataGridView5->Rows[main2.getH() - j + 4]->Cells[i]->Value = main2.getV(i - 2, j - 2).ToString("E");
+        dataGridView5->Rows[mainOver2.getH() - j + 4]->Cells[i]->Value = mainOver2.getV(i - 2, j - 2).ToString("E");
       }
     }
 
@@ -1042,16 +1109,101 @@ namespace overRelaxation {
     label6->Text = ("x: " + rMaxX.ToString());
     label10->Text = ("y: " + rMaxY.ToString());
   }
-  private: System::Void updateTable_t()
+  private: System::Void updateTableOver_t()
   {
-    for (int i = 2; i < test.getW() + 3; i++)
+    for (int i = 2; i < testOver.getW() + 3; i++)
     {
-      for (int j = 2; j < test.getH() + 3; j++)
+      for (int j = 2; j < testOver.getH() + 3; j++)
       {
-        dataGridView2->Rows[test.getH() - j + 4]->Cells[i]->Value = test.getV(i - 2, j - 2).ToString("E");
-        dataGridView1->Rows[test.getH() - j + 4]->Cells[i]->Value = test.getU(i - 2, j - 2).ToString("E");
-        dataGridView3->Rows[test.getH() - j + 4]->Cells[i]->Value = (abs(test.getU(i - 2, j - 2) - test.getV(i - 2, j - 2))).ToString("E");
+        dataGridView2->Rows[testOver.getH() - j + 4]->Cells[i]->Value = testOver.getV(i - 2, j - 2).ToString("E");
+        dataGridView1->Rows[testOver.getH() - j + 4]->Cells[i]->Value = testOver.getU(i - 2, j - 2).ToString("E");
+        dataGridView3->Rows[testOver.getH() - j + 4]->Cells[i]->Value = (abs(testOver.getU(i - 2, j - 2) - testOver.getV(i - 2, j - 2))).ToString("E");
       }
+    }
+  }
+  private: System::Void updateTableSit_m()
+  {
+    double tmpMaxR = 0., tmpR;
+    int rMaxX, rMaxY;
+
+    for (int i = 2; i < mainSIt1.getW() + 3; i++)
+    {
+      for (int j = 2; j < mainSIt1.getH() + 3; j++)
+      {
+        dataGridView4->Rows[mainSIt1.getH() - j + 4]->Cells[i]->Value = mainSIt1.getV(i - 2, j - 2).ToString("E");
+        tmpR = abs(mainSIt2.getV(2 * i - 4, 2 * j - 4) - mainSIt1.getV(i - 2, j - 2));
+        dataGridView6->Rows[mainSIt1.getH() - j + 4]->Cells[i]->Value = tmpR.ToString("E");
+        if (tmpR > tmpMaxR)
+        {
+          tmpMaxR = tmpR;
+          rMaxX = i - 2;
+          rMaxY = j - 2;
+        }
+      }
+    }
+    for (int i = 2; i < mainSIt2.getW() + 3; i++)
+    {
+      for (int j = 2; j < mainSIt2.getH() + 3; j++)
+      {
+        dataGridView5->Rows[mainSIt2.getH() - j + 4]->Cells[i]->Value = (mainSIt2.getV(i - 2, j - 2)).ToString("E");
+      }
+    }
+
+    textBox6->Text = tmpMaxR.ToString("E");
+    label6->Text = ("x: " + rMaxX.ToString());
+    label10->Text = ("y: " + rMaxY.ToString());
+  }
+  private: System::Void updateTableSit_t()
+  {
+    for (int i = 2; i < testSIt.getW() + 3; i++)
+    {
+      for (int j = 2; j < testSIt.getH() + 3; j++)
+      {
+        dataGridView2->Rows[testSIt.getH() - j + 4]->Cells[i]->Value = testSIt.getV(i - 2, j - 2).ToString("E");
+        dataGridView1->Rows[testSIt.getH() - j + 4]->Cells[i]->Value = testSIt.getU(i - 2, j - 2).ToString("E");
+        dataGridView3->Rows[testSIt.getH() - j + 4]->Cells[i]->Value = (abs(testSIt.getU(i - 2, j - 2) - testSIt.getV(i - 2, j - 2))).ToString("E");
+      }
+    }
+  }
+
+  private: System::Void textBox11_KeyPress(System::Object^  sender, System::Windows::Forms::KeyPressEventArgs^  e)
+  {
+    char number = (char)e->KeyChar;
+    if (!Char::IsDigit(number) && number != 8)
+    {
+      e->Handled = true;
+    }
+  }
+  private: System::Void textBox10_KeyPress(System::Object^  sender, System::Windows::Forms::KeyPressEventArgs^  e)
+  {
+    char number = (char)e->KeyChar;
+    if (!Char::IsDigit(number) && number != 8)
+    {
+      e->Handled = true;
+    }
+  }
+  private: System::Void textBox1_KeyPress(System::Object^  sender, System::Windows::Forms::KeyPressEventArgs^  e)
+  {
+    char number = (char)e->KeyChar;
+    if (!Char::IsDigit(number) && number != 8 && number != 44 && number != 45 && number != 46 && number != 101)
+    {
+      e->Handled = true;
+    }
+  }
+  private: System::Void textBox2_KeyPress(System::Object^  sender, System::Windows::Forms::KeyPressEventArgs^  e)
+  {
+    char number = (char)e->KeyChar;
+    if (!Char::IsDigit(number) && number != 8)
+    {
+      e->Handled = true;
+    }
+  }
+  private: System::Void textBox7_KeyPress(System::Object^  sender, System::Windows::Forms::KeyPressEventArgs^  e)
+  {
+    char number = (char)e->KeyChar;
+    if (!Char::IsDigit(number) && number != 8 && number != 44 && number != 45 && number != 46 && number != 101)
+    {
+      e->Handled = true;
     }
   }
   };

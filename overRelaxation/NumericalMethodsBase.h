@@ -1,25 +1,44 @@
 #pragma once
 #include <vector>
-#include <math.h>
-
-#define _USE_MATH_DEFINES
 
 class NumericalMethodsBase
 {
 protected:
   void updateSteps();
-  void setParameters(int _xNumberStep, int _yNumberStep, double _eps, double _maxCountStep, double _xLeft, double _xRight, double _yLeft, double _yRight, double _omega = 1.);
+  void setOmeg(double _omega);
 
 public:
-  int    getN() const;
-  double getEps() const;
-
   NumericalMethodsBase();
   NumericalMethodsBase(int _xNumberStep, int _yNumberStep, double _eps, double _maxCountStep, double _xLeft, double _xRight, double _yLeft, double _yRight, double _omega);
   NumericalMethodsBase(const NumericalMethodsBase& _instance);
   ~NumericalMethodsBase();
 
-  virtual void solveDifferenceScheme(){}
+  void setParameter(int _xNumberStep, int _yNumberStep, double _eps, double _maxCountStep, double _xLeft, double _xRight, double _yLeft, double _yRight, double _omega);
+  void setH(double _h);
+  void resetParameter();
+
+  void initTest();
+  void initMain();
+
+  double getX(int i);
+  double getY(int J);
+  int    getN() const;
+  int    getW() const;
+  int    getH() const;
+  int    getCountIt() const;
+  double getOmega() const;
+  double getMaxR(int &x, int &y);
+  double getMaxZ();
+  double getV(int i, int j) const;
+  double getU(int i, int j) const;
+  double getEps() const;
+
+  // Functions of boundary and solucion
+  double ft(double x, double y);
+  double muu(double _x, double _y);
+  double mut(double _x, double _y);
+  double muy(double _y);
+  double mux(double _x);
 
 protected:
   int    xNumberStep;       // Number of partitions on the abscissa axis
@@ -31,4 +50,8 @@ protected:
   double xRight, xLeft;     // Limits on the abscissa axis
   double yRight, yLeft;     // Limits on the ordinate axis
   double omega;             // Parameter of method
+
+  std::vector<std::vector<double> > v;  // Iterative solution
+  std::vector<std::vector<double> > v2;  // Iterative solution
+  std::vector<std::vector<double> > u;  // Exact solution
 };
