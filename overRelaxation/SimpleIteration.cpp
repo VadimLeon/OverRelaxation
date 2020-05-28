@@ -1,4 +1,3 @@
-#include <iostream>
 #include "SimpleIteration.h"
 #include "Methods.h"
 
