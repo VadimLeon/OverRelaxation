@@ -1,8 +1,3 @@
-﻿  ChebishevMethod.cpp
-  NumericalMethodsBase.cpp
-  overRelax.cpp
-  SimpleIteration.cpp
-  Создание кода...
-  MyForm.cpp
+﻿  MinimumDiscrepancy.cpp
   ChebishevMethod.obj : обнаружен модуль MSIL; для MSIL последовательная компоновка отключена; выполняется полная компоновка
-  overRelaxation.vcxproj -> S:\data\GitRepos\overRelaxation\x64\Debug\overRelaxation.exe
+  overRelaxation.vcxproj -> S:\data\GitRepos\Study\ChM_Labs\overRelaxation\x64\Debug\overRelaxation.exe

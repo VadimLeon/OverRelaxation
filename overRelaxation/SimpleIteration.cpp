@@ -65,7 +65,7 @@ void SimpleIteration::revertv()
   }
 }
 
-double SimpleIteration::getMaxR(const SimpleIteration& /*instance*/, int& x, int& y)
+double SimpleIteration::getMaxRv(int& x, int& y)
 {
   double Rmax = 0., tmp;
 

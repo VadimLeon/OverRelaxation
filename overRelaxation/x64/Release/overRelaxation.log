@@ -1,4 +1,5 @@
 ﻿  ChebishevMethod.cpp
+  MinimumDiscrepancy.cpp
   NumericalMethodsBase.cpp
   overRelax.cpp
   SimpleIteration.cpp
@@ -6,4 +7,4 @@
   MyForm.cpp
   .NETFramework,Version=v4.0.AssemblyAttributes.cpp
   LINK : указан параметр /LTCG, но не требуется создание кода; удалите /LTCG из командной строки компоновки для повышения производительности компоновщика
-  overRelaxation.vcxproj -> S:\data\GitRepos\overRelaxation\x64\Release\overRelaxation.exe
+  overRelaxation.vcxproj -> S:\data\GitRepos\Study\ChM_Labs\overRelaxation\x64\Release\overRelaxation.exe
